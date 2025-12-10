@@ -24,7 +24,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -36,10 +35,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,26 +52,33 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val viewModel: HomeViewModel = hiltViewModel()
-            val pictureList by viewModel.pictureList.collectAsStateWithLifecycle()
-            val gridState = rememberLazyGridState()
-            AndroidAppTemplateTheme {
-                Scaffold(
-                    topBar = {
-                        TopAppBar(
-                            title = { Text("Lorem PicSum") }
-                        )
-                    },
-                    modifier = Modifier.fillMaxSize()
+            HomeScreen()
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeScreen() {
+    val viewModel: HomeViewModel = hiltViewModel()
+    val pictureList by viewModel.pictureList.collectAsStateWithLifecycle()
+    val gridState = rememberLazyGridState()
+    AndroidAppTemplateTheme {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Lorem PicSum") }
                 )
-                { innerPadding ->
-                    HomeContent(
-                        modifier = Modifier.padding(innerPadding),
-                        pictureList = pictureList,
-                        gridState = gridState
-                    )
-                }
-            }
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+        { innerPadding ->
+            HomeContent(
+                modifier = Modifier.padding(innerPadding),
+                pictureList = pictureList,
+                gridState = gridState
+            )
         }
     }
 }
@@ -93,7 +97,7 @@ fun HomeContent(
     ) {
         items(
             pictureList,
-            key = {picture -> picture.id}
+            key = { picture -> picture.id }
         ) { picture ->
             PictureItem(picture)
         }
@@ -102,14 +106,13 @@ fun HomeContent(
 
 @Composable
 fun PictureItem(data: PictureData) {
-    var isExpanded by remember {mutableStateOf(false)}
+    var isExpanded by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { isExpanded = !isExpanded }
-        ,
+            .clickable { isExpanded = !isExpanded },
         border = BorderStroke(
             width = 2.dp,
             color = Color.DarkGray
@@ -139,12 +142,12 @@ fun PictureItem(data: PictureData) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
-                ){
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(data.author, modifier = Modifier)
-                        Text("ID: ${data.id}", modifier = Modifier.padding(vertical = 4.dp),)
+                        Text("ID: ${data.id}", modifier = Modifier.padding(vertical = 4.dp))
                     }
                 }
             }
