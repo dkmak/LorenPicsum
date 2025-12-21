@@ -15,7 +15,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal object NetworkModule {
-
     const val BASE_URL = "https://picsum.photos/v2/"
 
     @Provides
@@ -23,7 +22,6 @@ internal object NetworkModule {
     fun provideJson(): Json = Json {
         ignoreUnknownKeys = true // prevent app from crashing when the API sends you more data than you are expecting.
     }
-
 
     @Provides
     @Singleton
@@ -40,8 +38,6 @@ internal object NetworkModule {
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
-
-
 
     @Provides
     @Singleton
