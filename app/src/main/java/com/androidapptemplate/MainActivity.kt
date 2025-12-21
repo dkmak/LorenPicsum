@@ -12,6 +12,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +25,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -57,12 +59,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen() {
     val viewModel: HomeViewModel = hiltViewModel()
-    val pictureList by viewModel.pictureList.collectAsStateWithLifecycle()
+    val uiState by viewModel.pictureUiState.collectAsStateWithLifecycle()
     val gridState = rememberLazyGridState()
     AndroidAppTemplateTheme {
         Scaffold(
@@ -74,11 +75,25 @@ fun HomeScreen() {
             modifier = Modifier.fillMaxSize()
         )
         { innerPadding ->
-            HomeContent(
-                modifier = Modifier.padding(innerPadding),
-                pictureList = pictureList,
-                gridState = gridState
-            )
+            when (val state = uiState) {
+                is PicturesUiState.Error -> {
+                    ErrorMessage(
+                        modifier = Modifier.padding(innerPadding),
+                        errorMessage = state.message
+                    )
+                }
+                is PicturesUiState.Loading -> {
+                    Loading(modifier = Modifier.padding(innerPadding))
+                }
+
+                is PicturesUiState.Success -> {
+                    HomeContent(
+                        modifier = Modifier.padding(innerPadding),
+                        pictureList = state.pictures,
+                        gridState = gridState
+                    )
+                }
+            }
         }
     }
 }
@@ -155,6 +170,35 @@ fun PictureItem(data: PictureData) {
     }
 }
 
+@Composable
+fun ErrorMessage(
+    modifier: Modifier = Modifier,
+    errorMessage: String
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = errorMessage)
+    }
+}
+
+@Composable
+fun Loading(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun HomeContentPreview() {
@@ -181,6 +225,22 @@ fun HomeContentPreview() {
             ),
             gridState = rememberLazyGridState()
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoadingPreview() {
+    AndroidAppTemplateTheme {
+        Loading()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ErrorPreview() {
+    AndroidAppTemplateTheme {
+        PicturesUiState.Error(message = "An unknown error occurred")
     }
 }
 
