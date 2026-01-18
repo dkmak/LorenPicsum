@@ -1,7 +1,5 @@
 package com.androidapptemplate
 
-import com.androidapptemplate.ui.theme.ApiService
-import com.androidapptemplate.ui.theme.ApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,7 +1,6 @@
 package com.androidapptemplate
 
 import android.util.Log
-import com.androidapptemplate.ui.theme.ApiClient
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

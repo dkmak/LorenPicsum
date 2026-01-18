@@ -1,6 +1,5 @@
-package com.androidapptemplate.ui.theme
+package com.androidapptemplate
 
-import com.androidapptemplate.PictureData
 import retrofit2.http.GET
 import retrofit2.http.Query
 import javax.inject.Inject
@@ -14,7 +13,6 @@ class ApiClient @Inject constructor(
 
 }
 
-// can test this interface using a mock server
 interface ApiService {
     @GET("list")
     suspend fun getPictures(
