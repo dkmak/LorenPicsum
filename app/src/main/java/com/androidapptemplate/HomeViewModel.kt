@@ -22,7 +22,9 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     val pictureUiState: StateFlow<PicturesUiState> = homeRepository
         .getPictures(limit = INITIAL_LIMIT).map { result ->
+            // take the Result object and transform the data to a UI State object
             result.fold(
+                // fold makes it easy to process successes and failures
                 onSuccess = { pictures ->
                     Log.d("HomeViewModel", "Success: $result")
                     PicturesUiState.Success(pictures.sortedBy { it.author })
